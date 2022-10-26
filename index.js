@@ -89,6 +89,41 @@ app.delete("/game/:id",(req, res) => {
     }    
 });
 
+app.put("/game/:id", (req, res) => {
+
+    if(isNaN(req.params.id)){
+        res.sendStatus(400);
+    }else{
+        var id = parseInt(req.params.id);
+                                 //achar um game que tenha um id igual ao parametro
+        var game = DB.games.find(g => g.id == id);
+
+        if (game != undefined) {
+
+            var {title, price, year} = req.body;  
+
+            if ( title != undefined){
+                game.title = title;
+            }
+
+            if ( price != undefined){
+                game.price = price;
+            }
+
+            if ( year != undefined){
+                game.year = year;
+            }
+
+            res.sendStatus(200);
+
+        }else{
+            res.sendStatus(404);
+        }
+
+    }    
+
+})
+
 app.listen(45678,()=>{
     console.log("API IS RUNNING!")
 })
