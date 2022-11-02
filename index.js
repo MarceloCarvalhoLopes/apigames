@@ -31,6 +31,20 @@ var DB = {
             price:20
         }
 
+    ],
+    users:[
+        {
+            id:1,
+            name:"Marcelo",
+            email:"marcelolcarvalho@gmail.com",
+            password:"123456"
+        },
+        {
+            id:2,
+            name:"José",
+            email:"joselcarvalho@gmail.com",
+            password:"123456"
+        }
     ]
 
 }
@@ -125,6 +139,33 @@ app.put("/game/:id", (req, res) => {
 
     }    
 
+})
+
+app.post("/auth",(req, res) => {
+    
+    var {email, password} = req.body;
+
+    if(email != undefined){
+
+        var user = DB.users.find(u => u.email == email);
+
+        if (user != undefined) {
+            if(user.password == password){
+                console.log(password);
+                console.log(user.password);
+            }else{
+                res.status(401);
+                res.json({err: "Credenciais inválidas!"});
+            }
+        }else{
+            res.status(400);
+            res.json({err: "O e-mail enviado não existe na base de dados!"});
+        }
+
+    }else{
+        res.status(400);
+        res.json({err: "O e-mail enviado é inválido!"});
+    }
 })
 
 app.listen(45678,()=>{
