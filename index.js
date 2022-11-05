@@ -79,8 +79,8 @@ var DB = {
     
 app.get("/games",auth,(req, res) => {
     res.statusCode = 200;
-    //res.json(DB.games);
-    res.json({user: req.loggedUder, games: DB.games});
+    res.json(DB.games);
+    //res.json({user: req.loggedUder, games: DB.games});
 });
 
 
@@ -103,7 +103,7 @@ app.get("/game/:id",(req, res) => {
     }
 })
 
-app.post("/game",(req,res) => {
+app.post("/game",auth,(req,res) => {
     var {title, price, year} = req.body;
 
     DB.games.push({
@@ -117,7 +117,7 @@ app.post("/game",(req,res) => {
 
 })
 
-app.delete("/game/:id",(req, res) => {
+app.delete("/game/:id",auth,(req, res) => {
     if(isNaN(req.params.id)){
         res.sendStatus(400);
     }else{
