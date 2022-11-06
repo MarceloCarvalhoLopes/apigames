@@ -78,23 +78,70 @@ var DB = {
 }
     
 app.get("/games",auth,(req, res) => {
+    
+    var HATEOAS = [
+        {
+            href: "http://localhost:45678/game/0",
+            method: "DELETE",
+            rel: "delete_game"
+        },
+        {
+            href: "http://localhost:45678/game/0",
+            method: "GET",
+            rel: "get_game"
+
+        },
+        {
+            href: "http://localhost:45678/auth",
+            method: "POST",
+            rel: "login"
+
+        }
+    ]
+    
     res.statusCode = 200;
-    res.json(DB.games);
+    res.json({games:DB.games, _links: HATEOAS });
     //res.json({user: req.loggedUder, games: DB.games});
 });
 
 
 app.get("/game/:id",(req, res) => {
+    
     if(isNaN(req.params.id)){
         res.sendStatus(400);
     }else{
         var id = parseInt(req.params.id);
+
+        var HATEOAS = [
+            {
+                href: "http://localhost:45678/game/" + id,
+                method: "DELETE",
+                rel: "delete_game"
+            },
+            {
+                href: "http://localhost:45678/game/" + id,
+                method: "PUT",
+                rel: "edit_game"
+            },
+            {
+                href: "http://localhost:45678/game/"+ id,
+                method: "GET",
+                rel: "get_game"
+    
+            },
+            {
+                href: "http://localhost:45678/games",
+                method: "GET",
+                rel: "get_all_games"
+    
+            }
+        ]
                                  //achar um game que tenha um id igual ao parametro
         var game = DB.games.find(g => g.id == id);
 
         if (game != undefined) {
             res.statusCode = 200;
-            res.json(game);
+            res.json({game, _links : HATEOAS});
 
         }else{
             res.sendStatus(404);
@@ -141,7 +188,7 @@ app.put("/game/:id", (req, res) => {
         res.sendStatus(400);
     }else{
         var id = parseInt(req.params.id);
-                                 //achar um game que tenha um id igual ao parametro
+        //achar um game que tenha um id igual ao parametro
         var game = DB.games.find(g => g.id == id);
 
         if (game != undefined) {
@@ -161,6 +208,7 @@ app.put("/game/:id", (req, res) => {
             }
 
             res.sendStatus(200);
+            res.json(game);
 
         }else{
             res.sendStatus(404);
